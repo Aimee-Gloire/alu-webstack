@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
-# print domains and subdomains
+# Print domains and subdomains
 
 print_domain_subdomain () {
-    local result=$(dig "$1" | grep -A1 'ANSWER SECTION:')
+    local full_domain=$1
+    local subdomain=$2
+    local ip=$(dig +short "$full_domain")
     
-    if [ -z "$result" ]; then
-        echo "The subdomain $1 does not exist or has no A record."
+    if [ -z "$ip" ]; then
+        echo "The subdomain $full_domain does not exist or has no A record."
     else
-        echo "$result" | sed -r "s/$1./$2/g" | awk -F" " ' NR==2 { print "The subdomain " $1 " is a " $4 " record and points to " $5 }'
+        echo "The subdomain $subdomain is an A record and points to $ip"
     fi
 }
 
